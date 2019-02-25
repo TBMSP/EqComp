@@ -1,0 +1,2 @@
+# EqComp
+Calculadora Sismica
