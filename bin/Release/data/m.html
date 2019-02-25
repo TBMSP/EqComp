@@ -1,0 +1,84 @@
+<html>
+<head>
+<link rel="stylesheet" href="l.css" />
+<script src="l.js"></script>
+<style>
+body{
+margin:0px;
+padding:0px;
+}
+#map{
+width:100%;
+height:100%;
+}
+#epc{
+background:#000;
+z-index: 999;
+position: absolute;
+color:#fff;
+font-family:arial;
+padding:10px;
+}
+</style>
+</head>
+<body>
+<div id="epc"></div>
+<div id="map"></div>
+<script type="text/javascript">
+var ic = L.icon({iconUrl: 'i.png',iconSize: [32,32],iconAnchor: [16,16],popupAnchor: [0,-16]});
+var ep = L.icon({iconUrl: 'e.png',iconSize: [32,32],iconAnchor: [16,16],popupAnchor: [0,-16]});
+var center=[0,0];
+var circles=[];
+var markers=[];
+var click;
+function AddStation(i,map,info,Latlong,r){
+try{
+map.removeLayer(circles[i]);
+map.removeLayer(markers[i]);
+}catch(err){}
+var mc=L.circle(Latlong,{radius:r*1000,color:"red",fillOpacity:0.05,weight:2}).addTo(map);
+var mm=L.marker(Latlong,{icon:ic}).addTo(map).bindPopup(info);
+circles[i]=mc;
+markers[i]=mm;
+center[0]=0;
+center[1]=0;
+for(var i=0;i<circles.length;i++){
+center[0]+=circles[i].getLatLng().lat;
+center[1]+=circles[i].getLatLng().lng;
+}
+map.panTo(new L.LatLng(center[0]/circles.length,center[1]/circles.length));
+}
+function RemoveStations(){
+for(var i=0;i<circles.length;i++){
+map.removeLayer(circles[i]);
+map.removeLayer(markers[i]);
+}
+circles=[];
+markers=[];
+}
+var map = L.map('map',{attributionControl:false,zoomControl:false,minZoom:4,maxZoom:7}).setView([-33,-72],7);	
+var tiles="https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}";
+tiles="https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYmJhbGVzMTEiLCJhIjoiY2plYmptdmFwMGRydzJybzdpdzBxazk1aiJ9.ASSE0faIpkFAu87MR5RM0g";
+var atr="Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC";
+L.tileLayer(tiles,{attribution:atr}).addTo(map);
+map.on("click",function(e){
+if(click!=null){
+map.removeLayer(click);
+}
+click=new L.marker(e.latlng,{icon:ep}).addTo(map);
+document.getElementById("epc").innerHTML=e.latlng.lat+", "+e.latlng.lng;
+window.external.EPCM(e.latlng.lat+","+e.latlng.lng);
+});
+function AddStationCS(data){
+var dt=data.split("|");
+var indx=parseInt(dt[0]);
+var lg=dt[1].split(",");
+var lat=parseFloat(lg[0]);
+var lon=parseFloat(lg[1]);
+var info=dt[2];
+var km=parseFloat(dt[3]);
+AddStation(indx,map,info,[lat,lon],km);
+}
+</script>
+</body>
+</html>
