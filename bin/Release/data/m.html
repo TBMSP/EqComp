@@ -56,8 +56,9 @@ map.removeLayer(markers[i]);
 circles=[];
 markers=[];
 }
-var map = L.map('map',{attributionControl:false,zoomControl:false,minZoom:4,maxZoom:7}).setView([-33,-72],7);	
+var map = L.map('map',{attributionControl:false,zoomControl:false,minZoom:4,maxZoom:13}).setView([-33,-72],7);	
 var tiles="https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}";
+//tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
 tiles="https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYmJhbGVzMTEiLCJhIjoiY2plYmptdmFwMGRydzJybzdpdzBxazk1aiJ9.ASSE0faIpkFAu87MR5RM0g";
 var atr="Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC";
 L.tileLayer(tiles,{attribution:atr}).addTo(map);
